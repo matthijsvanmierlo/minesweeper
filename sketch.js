@@ -7,7 +7,7 @@ let homeScreen = null;
 let gameScreen = null;
 
 function setup() {
-  createCanvas(600, 500);
+  createCanvas(windowWidth, windowHeight);
   background(255);
   gameScreen = new GameScreen();
   homeScreen = new HomeScreen();
@@ -68,7 +68,7 @@ class HomeScreen{
   constructor(){
     this.text = "Minesweeper";
     this.author = "By: Matthijs van Mierlo";
-    this.start = new MyButton(" Play", 50, 200, 50, 25);
+    this.start = new MyButton(" Play", width / 8, height / 8 * 4, 50, 25);
     // this.how = new MyButton("How?", 150, 200, 50, 25);
     this.instructions1 = "Left-Click : reveal a tile";
     this.instructions2 = "Shift-Left-Click : flag a tile";
@@ -78,14 +78,14 @@ class HomeScreen{
     fill(255);
     stroke(255);
     textSize(50);
-    text(this.text, 50, 100);
+    text(this.text, width / 8, 2 * height / 8);
     textSize(20);
-    text(this.author, 50, 150);
+    text(this.author, width / 8, height / 8 * 3);
     textSize(15);
     noStroke();
     strokeWeight(1);
-    text(this.instructions1, 50, 350);
-    text(this.instructions2, 50, 375);
+    text(this.instructions1, width / 8, height - height / 8 * 2);
+    text(this.instructions2, width / 8, height - height / 8);
     this.start.drawMe();
     // this.how.drawMe();
   }
@@ -102,8 +102,8 @@ class GameScreen{
     this.check = null
     this.reset = null;
     this.grid = new Board();
-    this.check = new MyButton("Check", 525, 350, 50, 25);
-    this.reset = new MyButton("Reset", 525, 400, 50, 25);
+    this.check = new MyButton("Check", width - width / 5 + width / 20, height - height / 6, 50, 25);
+    this.reset = new MyButton("Reset", width - width / 5 + width / 20, height - 2* height / 6, 50, 25);
   }
   drawMe(){
     background(255);
@@ -112,10 +112,10 @@ class GameScreen{
     this.grid.show();
     stroke(0);
     fill(0);
-    text("Bombs:", 525, 50);
-    text(this.grid.numBombs, 525, 100);
-    text("Remaining:", 525, 150);
-    text(this.grid.numBombs - this.grid.bombsLocated, 525, 200);
+    text("Bombs:", width - width / 6, height / 8);
+    text(this.grid.numBombs, width - width / 6, 2 * height / 8);
+    text("Remaining:", width - width / 6, 3 * height / 8);
+    text(this.grid.numBombs - this.grid.bombsLocated, width - width / 6, 4 * height / 8);
     this.check.drawMe();
     this.reset.drawMe();
   }
@@ -211,32 +211,33 @@ class Board {
     for (let row = 0; row < this.board.length; row++) {
       for (let col = 0; col < this.board[0].length; col++) {
         // Adjust width for side bar
-        let x = Math.floor((col * (width - 100)) / this.board[0].length);
+        let x = Math.floor((col * (width - width / 5)) / this.board[0].length);
         let y = Math.floor((row * height) / this.board.length);
-        let dim = (width - 100) / this.board.length;
+        let dimX = (width - width / 5) / this.board.length;
+        let dimY = (height) / this.board.length;
         let temp = this.board[row][col];
         if(temp.revealed && !temp.flagged){
           let color = colors[temp.val + 1];
           stroke(color, 0, 0);
           fill(color, 0, 0);
-          rect(x, y, dim, dim);
+          rect(x, y, dimX, dimY);
           stroke(255);
           fill(255);
-          text(temp.val, x + 20, y + 30);
+          text(temp.val, x + dimX/2.5, y + dimY/2);
         }else if(temp.flagged){
           stroke(255);
           fill(255);
-          rect(x, y, dim, dim);
+          rect(x, y, dimX, dimY);
           stroke(0);
           fill(0);
-          text("*", x + 20, y + 30);
+          text("*", x + dimX/2.5, y + dimY/2);
         }else{
           fill(150);
           stroke(255);
-          rect(x, y, dim, dim);
-          stroke(0);
-          fill(0);
-          text(temp.val, x + 20, y + 30);
+          rect(x, y, dimX, dimY);
+          // stroke(0);
+          // fill(0);
+          // text(temp.val, x + 20, y + 30);
         }
       }
     }
@@ -266,9 +267,10 @@ class Board {
     return row >= 0 && row < this.board.length && col >= 0 && col < this.board[0].length;
   }
   processLeftClick(x, y) {
-    let dim = Math.floor((width - 100) / this.board.length);
-    let c = Math.floor(mouseX / dim);
-    let r = Math.floor(mouseY / dim);
+    let dimX = Math.floor((width - width / 5) / this.board.length);
+    let dimY = Math.floor((height) / this.board.length);
+    let c = Math.floor(mouseX / dimX);
+    let r = Math.floor(mouseY / dimY);
     if(this.isValid(r, c)){
       if(this.board[r][c].isBomb() && this.board[r][c].flagged == false){
         alert("Game over!");
@@ -284,9 +286,10 @@ class Board {
     }
   }
   processRightClick(x, y){
-    let dim = Math.floor((width - 100) / this.board.length);
-    let c = Math.floor(mouseX / dim);
-    let r = Math.floor(mouseY / dim);
+    let dimX = Math.floor((width - width / 5) / this.board.length);
+    let dimY = Math.floor((height) / this.board.length);
+    let c = Math.floor(mouseX / dimX);
+    let r = Math.floor(mouseY / dimY);
     if(this.isValid(r, c)){
       let temp = this.board[r][c];
       if(temp.flagged){
