@@ -29,6 +29,7 @@ class MyButton{
     rect(this.x, this.y, this.width, this.height);
     fill(255);
     stroke(255);
+    noStroke();
     text(this.text, this.x + 8, this.y + 17);
   }
   isClicked(x, y){
@@ -68,7 +69,9 @@ class HomeScreen{
     this.text = "Minesweeper";
     this.author = "By: Matthijs van Mierlo";
     this.start = new MyButton(" Play", 50, 200, 50, 25);
-    this.how = new MyButton("How?", 150, 200, 50, 25);
+    // this.how = new MyButton("How?", 150, 200, 50, 25);
+    this.instructions1 = "Left-Click : reveal a tile";
+    this.instructions2 = "Shift-Left-Click : flag a tile";
   }
   drawMe(){
     background(100, 100, 100);
@@ -78,8 +81,13 @@ class HomeScreen{
     text(this.text, 50, 100);
     textSize(20);
     text(this.author, 50, 150);
+    textSize(15);
+    noStroke();
+    strokeWeight(1);
+    text(this.instructions1, 50, 350);
+    text(this.instructions2, 50, 375);
     this.start.drawMe();
-    this.how.drawMe();
+    // this.how.drawMe();
   }
   processMouse(){
     if(this.start.isClicked(mouseX, mouseY)){
